@@ -3,16 +3,35 @@
 int main()
 {
     char str[100];
+    char encrypted[100];
+    char decrypted[100];
 
     printf("Enter a string: ");
     fgets(str, sizeof(str), stdin);
 
-    printf("After XOR with 0: ");
+    printf("\nOriginal String: %s", str);
 
-    for (int i = 0; str[i] != '\0'; i++)
+    printf("\nEncrypted String (XOR with 0): ");
+
+    int i;
+
+    for (i = 0; str[i] != '\0'; i++)
     {
-        printf("%c", str[i] ^ 0);
+        encrypted[i] = str[i] ^ 0;
+        printf("%c", encrypted[i]);
     }
+
+    encrypted[i] = '\0';
+
+    printf("\nDecrypted String: ");
+
+    for (i = 0; encrypted[i] != '\0'; i++)
+    {
+        decrypted[i] = encrypted[i] ^ 0;
+        printf("%c", decrypted[i]);
+    }
+
+    decrypted[i] = '\0';
 
     return 0;
 }
