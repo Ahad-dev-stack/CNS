@@ -1,0 +1,51 @@
+#include <stdio.h>
+
+unsigned int f_function(unsigned int right, unsigned int key)
+{
+    return right ^ key;
+}
+
+int main()
+{
+    unsigned int left, right;
+    unsigned int key;
+    unsigned int roundKey;
+    unsigned int temp;
+    int i;
+
+    printf("Enter Left half (8 hex digits): ");
+    scanf("%x", &left);
+
+    printf("Enter Right half (8 hex digits): ");
+    scanf("%x", &right);
+
+    printf("Enter Key (8 hex digits): ");
+    scanf("%x", &key);
+
+    for (i = 1; i <= 16; i++)
+    {
+        temp = right;
+
+        // Generate round key
+        roundKey = key ^ i;
+
+        // Feistel operation
+        right = left ^ f_function(right, roundKey);
+
+        left = temp;
+    }
+
+    temp = left;
+    left = right;
+    right = temp;
+
+    printf("\nCiphertext: %08X%08X\n", left, right);
+
+    return 0;
+}
+
+Enter Left half (8 hex digits): 12345678
+Enter Right half (8 hex digits): 9ABCDEF0
+Enter Key (8 hex digits): 13345779
+
+Ciphertext: 9BBCDFEB9ABCDEF5
