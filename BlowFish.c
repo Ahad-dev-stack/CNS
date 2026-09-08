@@ -75,3 +75,7 @@ int main()
 
     return 0;
 }
+
+Enter left half (8 hex digits): 12345678
+Enter right half (8 hex digits): 9ABCDEF0
+Enter 8 bit key values (0/1): 10101010
