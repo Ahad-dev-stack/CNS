@@ -1,5 +1,6 @@
 import java.util.*;
 import javax.crypto.*;
+import java.util.Base64;
 
 public class Task2 {
     static Scanner sc = new Scanner(System.in);
@@ -7,7 +8,7 @@ public class Task2 {
 
     static byte[] encrypt(String data) throws Exception {
         byte[] encrypted = cipher.doFinal(data.getBytes());
-        System.out.println("Encrypted: " + Arrays.toString(encrypted));
+        System.out.println("Encrypted: " + Base64.getEncoder().encodeToString(encrypted));
         return encrypted;
     }
 
