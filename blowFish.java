@@ -1,51 +1,41 @@
 import java.util.*;
 import javax.crypto.*;
-import javax.crypto.spec.IvParameterSpec;
 import java.util.Base64;
 
-public class BlowFish {
+public class Task3 {
+    static Scanner sc = new Scanner(System.in);
+    static Cipher cipher;
 
-    public static void main(String[] args) throws Exception {
+    private static byte[] encrypt(String data) throws Exception {
+        byte[] encrypted = cipher.doFinal(data.getBytes());
+        System.out.println("Encrypted: " +
+        Base64.getEncoder().encodeToString(encrypted));
+        return encrypted;
+    }
 
-        Scanner sc = new Scanner(System.in);
+    private static byte[] decrypt(byte[] data) throws Exception {
+        byte[] decrypted = cipher.doFinal(data);
+        System.out.println("Decrypted: " + new String(decrypted));
+        return decrypted;
+    }
 
-        System.out.print("Enter message: ");
-        String message = sc.nextLine();
+    public static void main(String[] args) {
+        try {
+            String data = sc.nextLine();
 
-        // Generate 128-bit Blowfish key
-        KeyGenerator keyGenerator = KeyGenerator.getInstance("Blowfish");
-        keyGenerator.init(128);
+            KeyGenerator kg = KeyGenerator.getInstance("Blowfish");
+            SecretKey key = kg.generateKey();
 
-        SecretKey key = keyGenerator.generateKey();
+            cipher = Cipher.getInstance("Blowfish");
 
-        // Create Blowfish cipher
-        Cipher cipher = Cipher.getInstance("Blowfish/CFB/NoPadding");
+            cipher.init(Cipher.ENCRYPT_MODE, key);
+            byte[] encrypted = encrypt(data);
 
-        // Encryption
-        cipher.init(Cipher.ENCRYPT_MODE, key);
+            cipher.init(Cipher.DECRYPT_MODE, key);
+            decrypt(encrypted);
 
-        byte[] iv = cipher.getIV();
-
-        System.out.println("Initialization Vector: "
-                + Base64.getEncoder().encodeToString(iv));
-
-        byte[] encrypted = cipher.doFinal(message.getBytes());
-
-        System.out.println("Encrypted text: "
-                + Base64.getEncoder().encodeToString(encrypted));
-
-        // Decryption
-        cipher.init(
-                Cipher.DECRYPT_MODE,
-                key,
-                new IvParameterSpec(iv)
-        );
-
-        byte[] decrypted = cipher.doFinal(encrypted);
-
-        System.out.println("Decrypted text: "
-                + new String(decrypted));
-
-        sc.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
