@@ -1,0 +1,79 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Diffie-Hellman Key Exchange</title>
+</head>
+<body>
+    <h2>Diffie-Hellman Key Exchange</h2>
+
+    <label>Prime number (p): </label>
+    <input type="number" id="p" value="23"><br><br>
+
+    <label>Primitive root (g): </label>
+    <input type="number" id="g" value="5"><br><br>
+
+    <label>Alice's private key (a): </label>
+    <input type="number" id="a" value="6"><br><br>
+
+    <label>Bob's private key (b): </label>
+    <input type="number" id="b" value="15"><br><br>
+
+    <button onclick="calculate()">Generate Shared Key</button>
+
+    <h3>Results</h3>
+    <p id="result"></p>
+
+    <script>
+        function powerMod(base, exp, mod) {
+            let result = 1;
+            base = base % mod;
+
+            while (exp > 0) {
+                if (exp % 2 === 1)
+                    result = (result * base) % mod;
+
+                base = (base * base) % mod;
+                exp = Math.floor(exp / 2);
+            }
+
+            return result;
+        }
+
+        function calculate() {
+            let p = Number(document.getElementById("p").value);
+            let g = Number(document.getElementById("g").value);
+            let a = Number(document.getElementById("a").value);
+            let b = Number(document.getElementById("b").value);
+
+            if (p <= 2 || g <= 0 || g >= p ||
+                a <= 0 || b <= 0 ||
+                ![p, g, a, b].every(Number.isSafeInteger)) {
+                document.getElementById("result").innerHTML =
+                    "Please enter valid positive integer values.";
+                return;
+            }
+
+            // Alice's public key
+            let A = powerMod(g, a, p);
+
+            // Bob's public key
+            let B = powerMod(g, b, p);
+
+            // Shared secret calculated by Alice
+            let keyAlice = powerMod(B, a, p);
+
+            // Shared secret calculated by Bob
+            let keyBob = powerMod(A, b, p);
+
+            document.getElementById("result").innerHTML =
+                "Alice's Public Key: " + A + "<br>" +
+                "Bob's Public Key: " + B + "<br>" +
+                "Alice's Shared Key: " + keyAlice + "<br>" +
+                "Bob's Shared Key: " + keyBob + "<br>" +
+                "Keys Match: " + (keyAlice === keyBob);
+        }
+    </script>
+</body>
+</html>
+```
