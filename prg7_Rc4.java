@@ -1,18 +1,20 @@
+
 import java.util.Scanner;
 
 public class RC4 {
 
     static byte[] process(byte[] data, String key) {
         int[] S = new int[256];
-        byte[] k = key.getBytes();
         byte[] result = new byte[data.length];
 
         for (int i = 0; i < 256; i++)
             S[i] = i;
 
         int j = 0;
+
+        // Key Scheduling Algorithm (KSA)
         for (int i = 0; i < 256; i++) {
-            j = (j + S[i] + (k[i % k.length] & 255)) % 256;
+            j = (j + S[i] + key.charAt(i % key.length())) % 256;
 
             int temp = S[i];
             S[i] = S[j];
@@ -22,6 +24,7 @@ public class RC4 {
         int i = 0;
         j = 0;
 
+        // Pseudo-Random Generation Algorithm (PRGA)
         for (int x = 0; x < data.length; x++) {
             i = (i + 1) % 256;
             j = (j + S[i]) % 256;
@@ -30,8 +33,8 @@ public class RC4 {
             S[i] = S[j];
             S[j] = temp;
 
-            int index = (S[i] + S[j]) % 256;
-            result[x] = (byte)(data[x] ^ S[index]);
+            int k = S[(S[i] + S[j]) % 256];
+            result[x] = (byte) (data[x] ^ k);
         }
 
         return result;
@@ -53,16 +56,14 @@ public class RC4 {
         }
 
         byte[] encrypted = process(text.getBytes(), key);
-        byte[] decrypted = process(encrypted, key);
 
-        System.out.println("Original Text: " + text);
-
-        System.out.print("Encrypted Text (Hex): ");
+        System.out.print("Encrypted (Hex): ");
         for (byte b : encrypted)
             System.out.printf("%02X", b & 255);
 
-        System.out.println();
-        System.out.println("Decrypted Text: " + new String(decrypted));
+        byte[] decrypted = process(encrypted, key);
+
+        System.out.println("\nDecrypted: " + new String(decrypted));
 
         sc.close();
     }
