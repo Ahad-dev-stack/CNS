@@ -1,60 +1,39 @@
-import java.util.*;
-import javax.crypto.*;
-import javax.crypto.spec.SecretKeySpec;
+
+import java.util.Scanner;
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
 
 public class AES {
-
-    public static String asHex(byte[] buf) {
-        StringBuffer strbuf = new StringBuffer(buf.length * 2);
-
-        for (int i = 0; i < buf.length; i++) {
-            if ((buf[i] & 0xff) < 0x10)
-                strbuf.append("0");
-
-            strbuf.append(Integer.toHexString(buf[i] & 0xff));
-        }
-
-        return strbuf.toString();
-    }
-
     public static void main(String[] args) throws Exception {
-
         Scanner sc = new Scanner(System.in);
 
         System.out.print("Enter message: ");
         String message = sc.nextLine();
 
-        // Generate 128-bit AES key
-        KeyGenerator kgen = KeyGenerator.getInstance("AES");
-        kgen.init(128);
+        // Generate AES key
+        KeyGenerator kg = KeyGenerator.getInstance("AES");
+        kg.init(128);
+        SecretKey key = kg.generateKey();
 
-        SecretKey secretKey = kgen.generateKey();
-
-        // Get key bytes
-        byte[] raw = secretKey.getEncoded();
-
-        SecretKeySpec keySpec = new SecretKeySpec(raw, "AES");
-
-        // Create AES cipher
+        // Create cipher
         Cipher cipher = Cipher.getInstance("AES");
 
         // Encryption
-        cipher.init(Cipher.ENCRYPT_MODE, keySpec);
-
+        cipher.init(Cipher.ENCRYPT_MODE, key);
         byte[] encrypted = cipher.doFinal(message.getBytes());
 
-        System.out.println("\nEncrypted text: "
-                           + asHex(encrypted));
+        System.out.print("Encrypted text: ");
+        for (byte b : encrypted)
+            System.out.printf("%02X", b);
+        System.out.println();
 
         // Decryption
-        cipher.init(Cipher.DECRYPT_MODE, keySpec);
+        cipher.init(Cipher.DECRYPT_MODE, key);
+        byte[] decrypted = cipher.doFinal(encrypted);
 
-        byte[] original = cipher.doFinal(encrypted);
-
-        String originalString = new String(original);
-
-        System.out.println("Decrypted text: "
-                           + originalString);
+        System.out.println("Decrypted text: " +
+                           new String(decrypted));
 
         sc.close();
     }
