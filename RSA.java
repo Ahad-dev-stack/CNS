@@ -1,49 +1,37 @@
-import java.math.*;
+
+import java.math.BigInteger;
 import java.util.*;
 
 public class Task7 {
-    static Scanner s = new Scanner(System.in);
-    static BigInteger p, q, N, phi, e, d;
-    static int bitlength = 1024;
-    static Random r;
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        Random r = new Random();
 
-    static void Setter() {
-        r = new Random();
+        System.out.print("Enter message: ");
+        String data = sc.nextLine();
 
-        p = BigInteger.probablePrime(bitlength, r);
-        q = BigInteger.probablePrime(bitlength, r);
+        BigInteger p = BigInteger.probablePrime(1024, r);
+        BigInteger q = BigInteger.probablePrime(1024, r);
 
-        N = p.multiply(q);
+        BigInteger n = p.multiply(q);
+        BigInteger phi = p.subtract(BigInteger.ONE)
+                          .multiply(q.subtract(BigInteger.ONE));
 
-        phi = p.subtract(BigInteger.ONE)
-               .multiply(q.subtract(BigInteger.ONE));
+        BigInteger e = BigInteger.probablePrime(512, r);
 
-        e = BigInteger.probablePrime(bitlength / 2, r);
-
-        while (phi.gcd(e).compareTo(BigInteger.ONE) > 0)
+        while (!e.gcd(phi).equals(BigInteger.ONE))
             e = e.add(BigInteger.ONE);
 
-        d = e.modInverse(phi);
-    }
+        BigInteger d = e.modInverse(phi);
 
-    static byte[] encrypt(String data) {
         BigInteger message = new BigInteger(1, data.getBytes());
-        return message.modPow(e, N).toByteArray();
-    }
+        BigInteger encrypted = message.modPow(e, n);
+        BigInteger decrypted = encrypted.modPow(d, n);
 
-    static byte[] decrypt(byte[] data) {
-        BigInteger encrypted = new BigInteger(1, data);
-        return encrypted.modPow(d, N).toByteArray();
-    }
+        System.out.println("Encryption: " + encrypted);
+        System.out.println("Decryption: " +
+                           new String(decrypted.toByteArray()));
 
-    public static void main(String[] args) {
-        String data = s.nextLine();
-
-        Setter();
-
-        byte[] encrypted = encrypt(data);
-
-        System.out.println("Encryption: " + new BigInteger(1, encrypted));
-        System.out.println("Decryption: " + new String(decrypt(encrypted)));
+        sc.close();
     }
 }
