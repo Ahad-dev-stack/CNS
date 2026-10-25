@@ -35,3 +35,5 @@ public class BlowfishDemo {
                 new String(decrypted, "UTF-8"));
     }
 }
+
+keytool -genseckey -alias mykey -keyalg Blowfish -keysize 128 -storetype JCEKS -keystore mykeys.jceks -storepass changeit -keypass changeit
