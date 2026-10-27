@@ -1,6 +1,6 @@
+
 import javax.crypto.*;
-import javax.crypto.spec.IvParameterSpec;
-import java.security.*;
+import javax.crypto.spec.*;
 import java.io.*;
 import java.util.*;
 
@@ -14,26 +14,22 @@ public class BlowfishDemo {
         SecretKey key = (SecretKey) ks.getKey(
                 "mykey", "changeit".toCharArray());
 
-        String text = "Hello world";
+        Cipher c = Cipher.getInstance("Blowfish/CBC/PKCS5Padding");
 
         byte[] iv = new byte[8];
-        new SecureRandom().nextBytes(iv);
-        IvParameterSpec ivSpec = new IvParameterSpec(iv);
+        new java.security.SecureRandom().nextBytes(iv);
+        IvParameterSpec ivs = new IvParameterSpec(iv);
 
-        Cipher c = Cipher.getInstance("Blowfish/CBC/PKCS5Padding");
-        c.init(Cipher.ENCRYPT_MODE, key, ivSpec);
+        c.init(Cipher.ENCRYPT_MODE, key, ivs);
+        byte[] encrypted = c.doFinal("Hello world".getBytes());
 
-        byte[] encrypted = c.doFinal(text.getBytes("UTF-8"));
-
-        c.init(Cipher.DECRYPT_MODE, key, ivSpec);
+        c.init(Cipher.DECRYPT_MODE, key, ivs);
         byte[] decrypted = c.doFinal(encrypted);
 
-        System.out.println("Original Text: " + text);
-        System.out.println("Encrypted Text: " +
+        System.out.println("Encrypted: " +
                 Base64.getEncoder().encodeToString(encrypted));
-        System.out.println("Decrypted Text: " +
-                new String(decrypted, "UTF-8"));
+        System.out.println("Decrypted: " + new String(decrypted));
     }
-}
 
-keytool -genseckey -alias mykey -keyalg Blowfish -keysize 128 -storetype JCEKS -keystore mykeys.jceks -storepass changeit -keypass changeit
+    // keytool -genseckey -alias mykey -keyalg Blowfish -keysize 128 -storetype JCEKS -keystore mykeys.jceks -storepass changeit -keypass changeit
+}
