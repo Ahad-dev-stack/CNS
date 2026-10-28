@@ -31,5 +31,5 @@ public class BlowfishDemo {
         System.out.println("Decrypted: " + new String(decrypted));
     }
 
-    // keytool -genseckey -alias mykey -keyalg Blowfish -keysize 128 -storetype JCEKS -keystore mykeys.jceks -storepass changeit -keypass changeit
+    // keytool -genseckey -alias mykey -keyalg Blowfish -keystore mykeys.jceks -storetype JCEKS
 }
