@@ -429,6 +429,47 @@ public class RC4 {
 }
 
 
+import java.util.Scanner;
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+
+public class RC4 {
+    public static void main(String[] args) throws Exception {
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Enter message: ");
+        String message = sc.nextLine();
+
+        // Generate RC4 key
+        KeyGenerator kg = KeyGenerator.getInstance("RC4");
+        SecretKey key = kg.generateKey();
+
+        // Create cipher
+        Cipher cipher = Cipher.getInstance("RC4");
+
+        // Encryption
+        cipher.init(Cipher.ENCRYPT_MODE, key);
+        byte[] encrypted = cipher.doFinal(message.getBytes());
+
+        System.out.print("Encrypted text: ");
+        for (byte b : encrypted)
+            System.out.printf("%02X", b & 0xFF);
+
+        System.out.println();
+
+        // Decryption
+        cipher.init(Cipher.DECRYPT_MODE, key);
+        byte[] decrypted = cipher.doFinal(encrypted);
+
+        System.out.println("Decrypted text: " + new String(decrypted));
+
+        sc.close();
+    }
+}
+
+
 
 
 import javax.crypto.*;
